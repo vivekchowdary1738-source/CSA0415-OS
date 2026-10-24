@@ -1,0 +1,85 @@
+
+#include <stdio.h>
+
+int main()
+{
+    int block[20], process[20], temp[20];
+    int allocation[20];
+    int m, n, i, j, k, choice, pos;
+
+    printf("Enter number of memory blocks: ");
+    scanf("%d", &m);
+
+    printf("Enter block sizes:\n");
+    for(i = 0; i < m; i++)
+        scanf("%d", &block[i]);
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    printf("Enter process sizes:\n");
+    for(i = 0; i < n; i++)
+        scanf("%d", &process[i]);
+
+    printf("\n1. First Fit");
+    printf("\n2. Best Fit");
+    printf("\n3. Worst Fit");
+    printf("\nEnter choice: ");
+    scanf("%d", &choice);
+
+    if(choice < 1 || choice > 3)
+    {
+        printf("Invalid choice\n");
+        return 0;
+    }
+
+    for(i = 0; i < m; i++)
+        temp[i] = block[i];
+
+    for(i = 0; i < n; i++)
+        allocation[i] = -1;
+
+    for(i = 0; i < n; i++)
+    {
+        pos = -1;
+
+        for(j = 0; j < m; j++)
+        {
+            if(temp[j] >= process[i])
+            {
+                if(choice == 1)
+                {
+                    pos = j;
+                    break;
+                }
+
+                if(pos == -1)
+                    pos = j;
+                else if(choice == 2 && temp[j] < temp[pos])
+                    pos = j;
+                else if(choice == 3 && temp[j] > temp[pos])
+                    pos = j;
+            }
+        }
+
+        if(pos != -1)
+        {
+            allocation[i] = pos + 1;
+            temp[pos] -= process[i];
+        }
+    }
+
+    printf("\nProcess\tSize\tBlock\n");
+
+    for(i = 0; i < n; i++)
+    {
+        if(allocation[i] == -1)
+            printf("P%d\t%d\tNot Allocated\n",
+                   i + 1, process[i]);
+        else
+            printf("P%d\t%d\t%d\n",
+                   i + 1, process[i], allocation[i]);
+    }
+
+    return 0;
+}
