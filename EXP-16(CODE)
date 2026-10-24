@@ -1,0 +1,125 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Employee
+{
+    int id;
+    char name[50];
+    float salary;
+};
+
+int main()
+{
+    FILE *fp;
+    struct Employee e;
+    int choice, id;
+
+    fp = fopen("employee.dat", "rb+");
+
+    if(fp == NULL)
+        fp = fopen("employee.dat", "wb+");
+
+    if(fp == NULL)
+    {
+        printf("File opening failed\n");
+        return 1;
+    }
+
+    do
+    {
+        printf("\n1. Add Employee");
+        printf("\n2. Display Employee");
+        printf("\n3. Update Employee");
+        printf("\n4. Exit");
+        printf("\nEnter choice: ");
+        scanf("%d", &choice);
+
+        switch(choice)
+        {
+            case 1:
+                printf("Enter Employee ID: ");
+                scanf("%d", &e.id);
+
+                if(e.id <= 0)
+                {
+                    printf("Invalid ID\n");
+                    break;
+                }
+
+                printf("Enter Name: ");
+                scanf("%49s", e.name);
+
+                printf("Enter Salary: ");
+                scanf("%f", &e.salary);
+
+                fseek(fp, (long)(e.id - 1) * sizeof(e), SEEK_SET);
+                fwrite(&e, sizeof(e), 1, fp);
+                printf("Employee Added\n");
+                break;
+
+            case 2:
+                printf("Enter Employee ID: ");
+                scanf("%d", &id);
+
+                if(id <= 0)
+                {
+                    printf("Invalid ID\n");
+                    break;
+                }
+
+                fseek(fp, (long)(id - 1) * sizeof(e), SEEK_SET);
+
+                if(fread(&e, sizeof(e), 1, fp) == 1 && e.id == id)
+                {
+                    printf("ID: %d\n", e.id);
+                    printf("Name: %s\n", e.name);
+                    printf("Salary: %.2f\n", e.salary);
+                }
+                else
+                    printf("Employee Not Found\n");
+
+                break;
+
+            case 3:
+                printf("Enter Employee ID to Update: ");
+                scanf("%d", &id);
+
+                if(id <= 0)
+                {
+                    printf("Invalid ID\n");
+                    break;
+                }
+
+                fseek(fp, (long)(id - 1) * sizeof(e), SEEK_SET);
+
+                if(fread(&e, sizeof(e), 1, fp) != 1 || e.id != id)
+                {
+                    printf("Employee Not Found\n");
+                    break;
+                }
+
+                printf("Enter New Name: ");
+                scanf("%49s", e.name);
+
+                printf("Enter New Salary: ");
+                scanf("%f", &e.salary);
+
+                fseek(fp, (long)(id - 1) * sizeof(e), SEEK_SET);
+                fwrite(&e, sizeof(e), 1, fp);
+                printf("Employee Updated\n");
+                break;
+
+            case 4:
+                printf("Exiting Program\n");
+                break;
+
+            default:
+                printf("Invalid Choice\n");
+        }
+
+    } while(choice != 4);
+
+    fclose(fp);
+    return 0;
+}
