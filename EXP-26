@@ -1,0 +1,49 @@
+#include <stdio.h>
+
+int main()
+{
+    FILE *fp;
+    char data[100];
+
+    fp = fopen("sample.txt", "w");
+
+    if(fp == NULL)
+    {
+        printf("File creation failed");
+        return 1;
+    }
+
+    printf("Enter data: ");
+    scanf(" %[^\n]", data);
+
+    fprintf(fp, "%s", data);
+    fclose(fp);
+
+    printf("File created successfully\n");
+
+    fp = fopen("sample.txt", "r");
+
+    if(fp == NULL)
+    {
+        printf("File opening failed");
+        return 1;
+    }
+
+    printf("File content: ");
+    fgets(data, sizeof(data), fp);
+    printf("%s\n", data);
+
+    fclose(fp);
+
+    if(rename("sample.txt", "newfile.txt") == 0)
+        printf("File renamed successfully\n");
+    else
+        printf("Rename failed\n");
+
+    if(remove("newfile.txt") == 0)
+        printf("File deleted successfully\n");
+    else
+        printf("Delete failed\n");
+
+    return 0;
+}
