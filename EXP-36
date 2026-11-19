@@ -1,0 +1,51 @@
+
+#include <stdio.h>
+
+int main() {
+    int n, count, b[50], i, j, valid = 1;
+    int used[100] = {0};
+
+    printf("Enter total disk blocks: ");
+    scanf("%d", &n);
+
+    printf("Enter number of file blocks: ");
+    scanf("%d", &count);
+
+    if(n > 100 || count <= 0 || count > n) {
+        printf("Invalid allocation\n");
+        return 0;
+    }
+
+    printf("Enter allocated blocks: ");
+
+    for(i = 0; i < count; i++) {
+        scanf("%d", &b[i]);
+
+        if(b[i] < 0 || b[i] >= n || used[b[i]]) {
+            valid = 0;
+        } else {
+            used[b[i]] = 1;
+        }
+    }
+
+    if(valid) {
+        printf("File allocated successfully\n");
+        printf("Block\tNext Block\n");
+
+        for(i = 0; i < count; i++) {
+            printf("%d\t", b[i]);
+
+            if(i == count - 1)
+                printf("NULL\n");
+            else
+                printf("%d\n", b[i + 1]);
+        }
+
+        printf("First Block: %d\n", b[0]);
+        printf("Last Block: %d\n", b[count - 1]);
+    } else {
+        printf("Invalid or already allocated blocks\n");
+    }
+
+    return 0;
+}
