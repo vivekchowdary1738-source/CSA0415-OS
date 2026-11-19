@@ -1,0 +1,48 @@
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+
+int main() {
+    struct stat st;
+    char *file = "demo.txt";
+    int uid = getuid();
+
+    FILE *fp = fopen(file, "w");
+    fprintf(fp, "Linux File Permissions");
+    fclose(fp);
+
+    chmod(file, 0640);
+    stat(file, &st);
+
+    printf("File Name: %s\n", file);
+
+    printf("User ID: %d\n", uid);
+
+    if(uid == 0)
+        printf("User Type: Root User\n");
+    else if(uid < 1000)
+        printf("User Type: System User\n");
+    else
+        printf("User Type: Regular User\n");
+
+    printf("File Permissions: ");
+
+    printf("%c", (st.st_mode & S_IRUSR) ? 'r' : '-');
+    printf("%c", (st.st_mode & S_IWUSR) ? 'w' : '-');
+    printf("%c", (st.st_mode & S_IXUSR) ? 'x' : '-');
+
+    printf("%c", (st.st_mode & S_IRGRP) ? 'r' : '-');
+    printf("%c", (st.st_mode & S_IWGRP) ? 'w' : '-');
+    printf("%c", (st.st_mode & S_IXGRP) ? 'x' : '-');
+
+    printf("%c", (st.st_mode & S_IROTH) ? 'r' : '-');
+    printf("%c", (st.st_mode & S_IWOTH) ? 'w' : '-');
+    printf("%c\n", (st.st_mode & S_IXOTH) ? 'x' : '-');
+
+    printf("Permission Mode: 640\n");
+
+    printf("File created successfully\n");
+
+    return 0;
+}
